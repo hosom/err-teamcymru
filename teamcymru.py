@@ -4,8 +4,8 @@ import datetime
 from errbot import BotPlugin, botcmd
 from collections import namedtuple
 
-OriginReply = namedtuple('OriginReply', 'as subnet country issuer registry_date')
-ASReply = namedtuple('ASReply', 'as country issuer registry_date registrant')
+OriginReply = namedtuple('OriginReply', 'asn subnet country issuer registry_date')
+ASReply = namedtuple('ASReply', 'asn country issuer registry_date registrant')
 MHRReply = namedtuple('MHReply', 'ts detection_rate')
 
 class TeamCyrmu(BotPlugin):
