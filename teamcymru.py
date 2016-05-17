@@ -21,7 +21,7 @@ class TeamCyrmu(BotPlugin):
 			return "Invalid IP or IP not found."
 		ip_answer = str(answers[0])
 		ip_fields = ip_answer.split('|')
-		ip_fields = [field.strip().strip('"') for field in fields]
+		ip_fields = [field.strip().strip('"') for field in ip_fields]
 
 		asn = ip_fields[0]
 		subnet = ip_fields[1]
@@ -35,7 +35,7 @@ class TeamCyrmu(BotPlugin):
 
 		asn_answer = answers[0]
 		asn_fields = asn_answer.split('|')
-		asn_fields = [field.strip().strip('"') for field in fields]
+		asn_fields = [field.strip().strip('"') for field in asn_fields]
 
 		registry_date = asn_fields[3]
 		registrant = asn_fields[4]
