@@ -2,7 +2,11 @@ import dns.resolver
 import datetime
 
 from errbot import BotPlugin, botcmd
+from collections import namedtuple
 
+OriginReply = namedtuple('OriginReply', 'as subnet country issuer registry_date')
+ASReply = namedtuple('ASReply', 'as country issuer registry_date registrant')
+MHRReply = namedtuple('MHReply', 'ts detection_rate')
 
 class TeamCyrmu(BotPlugin):
 
@@ -14,34 +18,23 @@ class TeamCyrmu(BotPlugin):
 	def ip2asn(self, msg, args):
 		'''Lookup an IP address in Team Cymru's IP ASN database.'''
 
-		ip = args.strip()
+		ip = args
 		reverse_ip = '.'.join(reversed(ip.split('.')))
 		try:
 			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return 'Invalid IP or IP not found.'
-		ip_answer = str(answers[0])
+		answer = answers[0].to_text().strip('"')
+		ip_answer = OriginReply(*[field for field in answer.split(' |')])
 		self.log.info('received answer: %s' % (ip_answer))
-		ip_fields = ip_answer.split('|')
-		ip_fields = [field.strip().strip('"') for field in ip_fields]
-
-		asn = ip_fields[0]
-		subnet = ip_fields[1]
-		country = ip_fields[2]
-		issuer = ip_fields[3]
 
 		try:
 			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return 'Error occurred on ASN lookup.'
-
-		asn_answer = str(answers[0])
-		asn_fields = asn_answer.split('|')
-		asn_fields = [field.strip().strip('"') for field in asn_fields]
-
-		registry_date = asn_fields[3]
-		registrant = asn_fields[4]
-
+		answer = answers[0].to_text().strip('"')
+		asn_answer = ASReply(*[field for field in answer.split(' |')])
+		self.log.info('received answer: %s' % (asn_answer))
 		return '''
 		```
 		Subnet: 		%s
@@ -51,12 +44,12 @@ class TeamCyrmu(BotPlugin):
 		Issuer: 		%s
 		Registry Date: 	%s
 		```
-		''' % (subnet, 
-			registrant,
-			asn,
-			country,
-			issuer,
-			registry_date)
+		''' % (ip_answer.subnet, 
+			asn_answer.registrant,
+			ip_answer.asn,
+			ip_answer.country,
+			ip_answer.issuer,
+			ip_answer.registry_date)
 
 	@botcmd(admin_only=False)
 	def mhr(self, msg, args):
@@ -68,16 +61,13 @@ class TeamCyrmu(BotPlugin):
 		except dns.resolver.NXDOMAIN:
 			return 'File not found in MHR.'
 
-		answer = str(answers[0])
-		answer_fields = answer.split(' ')
-		answer_fields = [field.strip().strip('"') for field in answer_fields]
+		answer = answers[0].to_text().strip('"')
+		answer = MHRReply(*[field for field in answer.split(' ')])
 
-
-		ts = datetime.datetime.fromtimestamp(int(answer_fields[0]))
-		detection_rate = answer_fields[1]
+		ts = datetime.datetime.fromtimestamp(int(answer.ts))
 
 		return 'Malicious file %s last seen %s with a detection rate of %s' % (
 										args,
 										ts,
-										detection_rate
+										answer.detection_rate
 										)
