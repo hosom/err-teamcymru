@@ -34,7 +34,7 @@ class TeamCyrmu(BotPlugin):
 		except dns.resolver.NXDOMAIN:
 			return "Error occurred on ASN lookup."
 
-		asn_answer = answers[0]
+		asn_answer = str(answers[0])
 		asn_fields = asn_answer.split('|')
 		asn_fields = [field.strip().strip('"') for field in asn_fields]
 
