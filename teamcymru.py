@@ -8,6 +8,7 @@ class TeamCyrmu(BotPlugin):
 
 	_IP_API = 'origin.asn.cymru.com'
 	_ASN_API = 'asn.cymru.com'
+	_MHR_API = 'malware.hash.cymru.com'
 
 	@botcmd(admin_only=False)
 	def ip2asn(self, msg, args):
@@ -18,7 +19,7 @@ class TeamCyrmu(BotPlugin):
 		try:
 			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
-			return "Invalid IP or IP not found."
+			return 'Invalid IP or IP not found.'
 		ip_answer = str(answers[0])
 		self.log.info('received answer: %s' % (ip_answer))
 		ip_fields = ip_answer.split('|')
@@ -32,7 +33,7 @@ class TeamCyrmu(BotPlugin):
 		try:
 			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
-			return "Error occurred on ASN lookup."
+			return 'Error occurred on ASN lookup.'
 
 		asn_answer = str(answers[0])
 		asn_fields = asn_answer.split('|')
@@ -43,12 +44,12 @@ class TeamCyrmu(BotPlugin):
 
 		return '''
 		```
-		Subnet: %s
-		Registrant: %s
-		AS: %s
-		Country: %s
-		Issuer: %s
-		Registry Date: %s
+		Subnet: 		%s
+		Registrant: 	%s
+		AS: 			%s
+		Country: 		%s
+		Issuer: 		%s
+		Registry Date: 	%s
 		```
 		''' % (subnet, 
 			registrant,
@@ -56,3 +57,27 @@ class TeamCyrmu(BotPlugin):
 			country,
 			issuer,
 			registry_date)
+
+	@botcmd(admin_only=False)
+	def mhr(self, msg, args):
+		'''Lookup a file in the malware hash registry.'''
+
+		ahash = args
+		try:
+			answers = dns.resolver.query('%s.%s' % (ahash, _MHR_API), 'TXT')
+		except dns.resolver.NXDOMAIN:
+			return 'File not found in MHR.'
+
+		answer = str(answers[0])
+		answer_fields = answer.split(' ')
+		answer_fields = [field.strip().strip('"') for field in answer_fields]
+
+
+		ts = datetime.datetime.fromtimestamp(int(answer_fields[0]))
+		detection_rate = answer_fields[1]
+
+		return 'Malicious file %s last seen %s with a detection rate of %s' % (
+										args,
+										ts,
+										detection_rate
+										)
