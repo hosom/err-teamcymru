@@ -13,7 +13,7 @@ class TeamCyrmu(BotPlugin):
 	def ip2asn(self, msg, args):
 		'''Lookup an IP address in Team Cymru's IP ASN database.'''
 
-		ip = args
+		ip = args.strip()
 		reverse_ip = '.'.join(reversed(ip.split('.')))
 		try:
 			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API))
@@ -29,7 +29,7 @@ class TeamCyrmu(BotPlugin):
 		issuer = ip_fields[3]
 
 		try:
-			answers = dns.resolver.query('%s.%s' % (ip_fields[0], self._ASN_API))
+			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API))
 		except dns.resolver.NXDOMAIN:
 			return "Error occurred on ASN lookup."
 
