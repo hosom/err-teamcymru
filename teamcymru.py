@@ -16,7 +16,7 @@ class TeamCyrmu(BotPlugin):
 		ip = args.strip()
 		reverse_ip = '.'.join(reversed(ip.split('.')))
 		try:
-			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API))
+			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return "Invalid IP or IP not found."
 		ip_answer = str(answers[0])
@@ -30,7 +30,7 @@ class TeamCyrmu(BotPlugin):
 		issuer = ip_fields[3]
 
 		try:
-			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API))
+			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return "Error occurred on ASN lookup."
 
