@@ -26,7 +26,7 @@ class TeamCyrmu(BotPlugin):
 			return 'Invalid IP or IP not found.'
 		answer = answers[0].to_text().strip('"')
 		ip_answer = OriginReply(*[field for field in answer.split(' |')])
-		self.log.info('received answer: %s' % (ip_answer))
+		#self.log.info('received answer: %s' % (ip_answer))
 
 		try:
 			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API), 'TXT')
@@ -34,7 +34,7 @@ class TeamCyrmu(BotPlugin):
 			return 'Error occurred on ASN lookup.'
 		answer = answers[0].to_text().strip('"')
 		asn_answer = ASReply(*[field for field in answer.split(' |')])
-		self.log.info('received answer: %s' % (asn_answer))
+		#self.log.info('received answer: %s' % (asn_answer))
 		return '''
 		```
 		Subnet: 		%s
