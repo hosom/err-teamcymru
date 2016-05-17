@@ -13,15 +13,14 @@ class TeamCyrmu(BotPlugin):
 	def ip2asn(self, msg, args):
 		'''Lookup an IP address in Team Cymru's IP ASN database.'''
 
-		self.log.debug('Processing ip2asn command')
 		ip = args.strip()
-		self.log.debug('Using: %s' % (ip))
 		reverse_ip = '.'.join(reversed(ip.split('.')))
 		try:
 			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API))
 		except dns.resolver.NXDOMAIN:
 			return "Invalid IP or IP not found."
 		ip_answer = str(answers[0])
+		log.info('received answer: %s' % (ip_answer))
 		ip_fields = ip_answer.split('|')
 		ip_fields = [field.strip().strip('"') for field in ip_fields]
 
