@@ -64,7 +64,7 @@ class TeamCyrmu(BotPlugin):
 
 		ahash = args
 		try:
-			answers = dns.resolver.query('%s.%s' % (ahash, _MHR_API), 'TXT')
+			answers = dns.resolver.query('%s.%s' % (ahash, self._MHR_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return 'File not found in MHR.'
 
