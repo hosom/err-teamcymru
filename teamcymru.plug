@@ -1,0 +1,9 @@
+[Core]
+Name = TeamCymru
+Module = teamcymru
+
+[Documentation]
+Description = This adds team cymru dns apis to errbot.
+
+[Python]
+Version = 3
