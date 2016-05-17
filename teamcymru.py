@@ -29,7 +29,7 @@ class TeamCyrmu(BotPlugin):
 		#self.log.info('received answer: %s' % (ip_answer))
 
 		try:
-			answers = dns.resolver.query('AS%s.%s' % (ip_fields[0], self._ASN_API), 'TXT')
+			answers = dns.resolver.query('AS%s.%s' % (ip_fields.asn, self._ASN_API), 'TXT')
 		except dns.resolver.NXDOMAIN:
 			return 'Error occurred on ASN lookup.'
 		answer = answers[0].to_text().strip('"')
