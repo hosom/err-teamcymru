@@ -20,7 +20,7 @@ class TeamCyrmu(BotPlugin):
 		except dns.resolver.NXDOMAIN:
 			return "Invalid IP or IP not found."
 		ip_answer = str(answers[0])
-		log.info('received answer: %s' % (ip_answer))
+		self.log.info('received answer: %s' % (ip_answer))
 		ip_fields = ip_answer.split('|')
 		ip_fields = [field.strip().strip('"') for field in ip_fields]
 
