@@ -13,7 +13,9 @@ class TeamCyrmu(BotPlugin):
 	def ip2asn(self, msg, args):
 		'''Lookup an IP address in Team Cymru's IP ASN database.'''
 
+		self.log.debug('Processing ip2asn command')
 		ip = args.strip()
+		self.log.debug('Using: %s' % (ip))
 		reverse_ip = '.'.join(reversed(ip.split('.')))
 		try:
 			answers = dns.resolver.query('%s.%s' % (reverse_ip, self._IP_API))
