@@ -39,7 +39,7 @@ class TeamCyrmu(BotPlugin):
 		```
 		Subnet: 		%s
 		Registrant: 	%s
-		AS: 			%s
+		AS:				%s
 		Country: 		%s
 		Issuer: 		%s
 		Registry Date: 	%s
